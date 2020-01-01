@@ -1,0 +1,38 @@
+version: '3.1'
+volumes:
+  s3data:
+    driver: local
+services:
+  s3vol:
+    image: elementar/s3-volume
+    command: "/data ${BUCKET_URL}"
+    environment:
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      BACKUP_INTERVAL: "${BACKUP_INTERVAL}"
+    volumes: 
+      - s3data:/data
+  mongo:
+    image: mongo
+    restart: always
+    container_name: 'mongodb-dc'
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: "${USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${PASSWORD}"
+    volumes:
+      - s3data:/data/db
+    ports:
+      - 27017-27019:27017-27019
+    depends_on:
+       - s3vol
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 9999:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: "${USERNAME}"
+      ME_CONFIG_MONGODB_ADMINPASSWORD: "${PASSWORD}"
+    depends_on: 
+      - mongo
