@@ -3,15 +3,15 @@ volumes:
   s3data:
     driver: local
 services:
-  s3vol:
-    image: elementar/s3-volume
-    command: "/data ${BUCKET_URL}"
-    environment:
-      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
-      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
-      BACKUP_INTERVAL: "${BACKUP_INTERVAL}"
-    volumes: 
-      - s3data:/data
+#  s3vol:
+#    image: elementar/s3-volume
+#    command: "/data ${BUCKET_URL}"
+#    environment:
+#      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+#      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+#      BACKUP_INTERVAL: "${BACKUP_INTERVAL}"
+#    volumes: 
+#      - s3data:/data
   mongo:
     image: mongo:5.0.9
     restart: always
@@ -23,8 +23,8 @@ services:
       - s3data:/data/db
     ports:
       - 27017-27019:27017-27019
-    depends_on:
-       - s3vol
+#    depends_on:
+#       - s3vol
 
   mongo-express:
     image: mongo-express
